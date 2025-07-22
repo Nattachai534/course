@@ -17,7 +17,7 @@
         
         body {
             font-family: 'Sarabun', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -32,7 +32,7 @@
         }
         
         .year-tabs {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
             border-radius: 20px 20px 0 0;
             padding: 0;
             display: flex;
@@ -41,7 +41,7 @@
         
         .year-tab {
             flex: 1;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.3);
             color: white;
             text-align: center;
             padding: 20px;
@@ -55,12 +55,12 @@
         }
         
         .year-tab:hover {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.4);
             transform: translateY(-2px);
         }
         
         .year-tab.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff9a9e 0%, #ff6b9d 100%);
             box-shadow: 0 8px 25px rgba(0,0,0,0.2);
         }
         
@@ -82,18 +82,18 @@
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
         .search-container {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #ff9a9e 0%, #ff6b9d 100%);
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+            box-shadow: 0 10px 30px rgba(255, 154, 158, 0.3);
         }
         
         .search-box {
@@ -394,19 +394,52 @@
 
     // เปลี่ยนปีและโหลดข้อมูล
     function selectYear(year) {
+        console.log('Selecting year:', year); // Debug log
         currentYear = year;
         
         // เปลี่ยน active class
         document.querySelectorAll('.year-tab').forEach(tab => {
             tab.classList.remove('active');
         });
-        document.getElementById('tab' + year).classList.add('active');
+        
+        const selectedTab = document.getElementById('tab' + year);
+        if (selectedTab) {
+            selectedTab.classList.add('active');
+            console.log('Active tab set for year:', year); // Debug log
+        }
         
         // เปลี่ยนหัวข้อตามปีที่เลือก
         const heading = document.querySelector('.main-title');
-        heading.innerHTML = 'กิจกรรมประชุมและสัมมนาวิชาการ ปีงบประมาณ ' + year;
+        if (heading) {
+            heading.innerHTML = 'กิจกรรมประชุมและสัมมนาวิชาการ ปีงบประมาณ ' + year;
+        }
         
-        // โหลดข้อมูลจาก Google Sheets
+        // แสดงข้อความแจ้งเตือนสำหรับปี 2569 และ 2570
+        if (year === '2569' || year === '2570') {
+            const tbody = document.querySelector('#activitiesTable tbody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px;">
+                        <div style="background: linear-gradient(135deg, #ff9a9e 0%, #ff6b9d 100%); color: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(255, 154, 158, 0.3);">
+                            <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">📅 ปีงบประมาณ ${year}</div>
+                            <div style="font-size: 14px;">ยังไม่มีข้อมูลกิจกรรมสำหรับปีนี้ หรือกำลังอยู่ในระหว่างการเตรียมข้อมูล</div>
+                            <div style="font-size: 12px; margin-top: 10px; opacity: 0.9;">สามารถเพิ่มข้อมูลใน Google Sheets เพื่อแสดงผลที่นี่</div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            
+            // ล้างผลการค้นหา
+            const searchResult = document.getElementById('searchResult');
+            if (searchResult) {
+                searchResult.textContent = '';
+            }
+            
+            console.log('Showing placeholder for year:', year); // Debug log
+            return;
+        }
+        
+        // โหลดข้อมูลจาก Google Sheets สำหรับปี 2568
         loadActivitiesFromSheets(year);
     }
 
