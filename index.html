@@ -8,8 +8,367 @@
     <!-- Google Fonts - Sarabun -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Sarabun', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .year-tabs {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 20px 20px 0 0;
+            padding: 0;
+            display: flex;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .year-tab {
+            flex: 1;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+            border: none;
+            font-family: 'Sarabun', Arial, sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .year-tab:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .year-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .year-tab:first-child {
+            border-radius: 20px 0 0 0;
+        }
+        
+        .year-tab:last-child {
+            border-radius: 0 20px 0 0;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .main-title {
+            text-align: center;
+            color: #2d3748;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .search-container {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .search-label {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .search-input {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            width: 250px;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            font-family: 'Sarabun', Arial, sans-serif;
+        }
+        
+        .search-input:focus {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Sarabun', Arial, sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-search {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-clear {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #8b4513;
+            box-shadow: 0 4px 15px rgba(252, 182, 159, 0.4);
+        }
+        
+        .btn-clear:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(252, 182, 159, 0.6);
+        }
+        
+        .search-result {
+            color: white;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        
+        .activities-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .table-header th {
+            padding: 20px 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+            border: none;
+        }
+        
+        .activity-row {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .activity-row:hover {
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 1;
+            position: relative;
+        }
+        
+        .activity-row.even {
+            background: linear-gradient(135deg, #ffeef8 0%, #f8e8ff 100%);
+        }
+        
+        .activity-row.odd {
+            background: white;
+        }
+        
+        .activity-cell {
+            padding: 20px 15px;
+            vertical-align: top;
+            border: none;
+        }
+        
+        .activity-title {
+            color: #4c51bf;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .activity-description {
+            color: #4c51bf;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .btn-detail {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .btn-detail:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+        }
+        
+        .btn-register {
+            background: linear-gradient(135deg, #10ac84 0%, #1dd1a1 100%);
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(16, 172, 132, 0.3);
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 172, 132, 0.5);
+        }
+        
+        .status-closed {
+            color: #e53e3e;
+            font-weight: 600;
+            background: #fed7d7;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .registration-info {
+            margin-bottom: 15px;
+        }
+        
+        .fee-internal {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border-left: 4px solid #10ac84;
+        }
+        
+        .fee-external {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff6b6b;
+        }
+        
+        .loading-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4facfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .search-box {
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .search-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .main-title {
+                font-size: 22px;
+            }
+            
+            .year-tab {
+                padding: 15px 10px;
+                font-size: 14px;
+            }
+            
+            .activities-table {
+                font-size: 14px;
+            }
+            
+            .activity-cell {
+                padding: 15px 10px;
+            }
+        }
+    </style>
+    
 </head>
-<body bgcolor="#ffffff" style="font-family: 'Sarabun', Arial, sans-serif; margin: 0; padding: 20px;">
+<body>
 
     <!-- แทบเลือกปีงบประมาณ -->
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -37,16 +396,14 @@
     function selectYear(year) {
         currentYear = year;
         
-        // เปลี่ยนสีแถบทั้งหมดเป็นสีส้มก่อน
-        document.getElementById('tab2568').style.backgroundColor = '#ff9966';
-        document.getElementById('tab2569').style.backgroundColor = '#ff9966';
-        document.getElementById('tab2570').style.backgroundColor = '#ff9966';
-        
-        // เปลี่ยนแถบที่เลือกเป็นสีน้ำเงิน
-        document.getElementById('tab' + year).style.backgroundColor = '#3366cc';
+        // เปลี่ยน active class
+        document.querySelectorAll('.year-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.getElementById('tab' + year).classList.add('active');
         
         // เปลี่ยนหัวข้อตามปีที่เลือก
-        var heading = document.querySelector('h2');
+        const heading = document.querySelector('.main-title');
         heading.innerHTML = 'กิจกรรมประชุมและสัมมนาวิชาการ ปีงบประมาณ ' + year;
         
         // โหลดข้อมูลจาก Google Sheets
@@ -125,13 +482,20 @@
         tbody.innerHTML = '';
         
         if (activities.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">ไม่พบข้อมูลกิจกรรม</td></tr>';
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #718096;">
+                        <div style="font-size: 18px; margin-bottom: 10px;">ไม่พบข้อมูลกิจกรรม</div>
+                        <div style="font-size: 14px;">ลองค้นหาด้วยคำค้นอื่น หรือเปลี่ยนปีงบประมาณ</div>
+                    </td>
+                </tr>
+            `;
             return;
         }
         
         activities.forEach((activity, index) => {
             const row = document.createElement('tr');
-            row.style.backgroundColor = index % 2 === 0 ? '#fce4ec' : '#ffffff';
+            row.className = `activity-row ${index % 2 === 0 ? 'even' : 'odd'}`;
             
             const regStatus = activity['สถานะการลงทะเบียน'] || 'ไม่ระบุ';
             const feeInternal = activity['ค่าลงทะเบียนภายใน'] || 0;
@@ -146,38 +510,42 @@
             const regCloseDate = formatDateThai(activity['วันที่ปิดลงทะเบียน']) || '25 สิงหาคม 2568';
             
             row.innerHTML = `
-                <td style="padding: 15px; vertical-align: top;">
-                    <strong style="color: #3366cc;">${activity['เรื่อง'] || 'ไม่ระบุหัวข้อ'}</strong><br>
-                    <span style="color: #3366cc;">${activity['รายละเอียด'] || ''}</span><br><br>
-                    <a href="${activity['ลิงค์รายละเอียด'] || '#'}" style="background-color: #dc3545; color: white; padding: 8px 15px; text-decoration: none; border-radius: 3px; font-size: 12px;">
+                <td class="activity-cell">
+                    <div class="activity-title">${activity['เรื่อง'] || 'ไม่ระบุหัวข้อ'}</div>
+                    <div class="activity-description">${activity['รายละเอียด'] || ''}</div>
+                    <a href="${activity['ลิงค์รายละเอียด'] || '#'}" class="btn-detail">
                         ● รายละเอียดเพิ่มเติมคลิกที่นี่
                     </a>
                 </td>
-                <td style="padding: 15px; text-align: center; vertical-align: top;">
-                    วันที่ ${startDate}<br>
-                    ${endDate && endDate !== startDate ? 'ถึง ' + endDate : ''}<br>
-                    ${activity['เวลา'] || '08.00 – 16.30 น.'}
+                <td class="activity-cell" style="text-align: center;">
+                    <div style="font-weight: 600; color: #2d3748; margin-bottom: 5px;">วันที่ ${startDate}</div>
+                    ${endDate && endDate !== startDate ? '<div style="color: #4a5568;">ถึง ' + endDate + '</div>' : ''}
+                    <div style="color: #718096; margin-top: 5px;">${activity['เวลา'] || '08.00 – 16.30 น.'}</div>
                 </td>
-                <td style="padding: 15px; text-align: center; vertical-align: top;">
-                    ${activity['รูปแบบ'] || 'Onsite'}<br>
-                    ${activity['สถานที่'] || 'ห้องประชุมใหญ่'}
+                <td class="activity-cell" style="text-align: center;">
+                    <div style="font-weight: 600; color: #2d3748; margin-bottom: 5px;">${activity['รูปแบบ'] || 'Onsite'}</div>
+                    <div style="color: #4a5568; line-height: 1.4;">${activity['สถานที่'] || 'ห้องประชุมใหญ่'}</div>
                 </td>
-                <td style="padding: 15px; text-align: center; vertical-align: top;">
-                    ตั้งแต่ ${regOpenDate}<br>
-                    ถึง ${regCloseDate}
+                <td class="activity-cell" style="text-align: center;">
+                    <div style="font-weight: 600; color: #2d3748; margin-bottom: 5px;">ตั้งแต่ ${regOpenDate}</div>
+                    <div style="color: #4a5568;">ถึง ${regCloseDate}</div>
                 </td>
-                <td style="padding: 15px; text-align: center; vertical-align: top;">
+                <td class="activity-cell" style="text-align: center;">
                     ${regStatus === 'เปิดรับลงทะเบียน' ? `
-                        <div style="margin-bottom: 10px;">
-                            <strong>บุคลากรภายใน:</strong> ${capacityInternal || 50} ท่าน<br>
-                            ค่าลงทะเบียน: ${feeInternal === 0 ? 'ฟรี' : feeInternal + ' บาท'}<br><br>
-                            <strong>บุคลากรภายนอก:</strong> ${capacityExternal || 100} ท่าน<br>
-                            ค่าลงทะเบียน: ${feeExternal === 0 ? 'ฟรี' : feeExternal + ' บาท'}
+                        <div class="registration-info">
+                            <div class="fee-internal">
+                                <strong>บุคลากรภายใน:</strong> ${capacityInternal || 50} ท่าน<br>
+                                ค่าลงทะเบียน: <strong>${feeInternal === 0 ? 'ฟรี' : feeInternal.toLocaleString() + ' บาท'}</strong>
+                            </div>
+                            <div class="fee-external">
+                                <strong>บุคลากรภายนอก:</strong> ${capacityExternal || 100} ท่าน<br>
+                                ค่าลงทะเบียน: <strong>${feeExternal === 0 ? 'ฟรี' : feeExternal.toLocaleString() + ' บาท'}</strong>
+                            </div>
                         </div>
-                        <a href="${activity['ลิงค์ลงทะเบียน'] || '#'}" style="background-color: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 3px; font-size: 12px;">
+                        <a href="${activity['ลิงค์ลงทะเบียน'] || '#'}" class="btn-register">
                             ✓ ลงทะเบียน
                         </a>
-                    ` : `<span style="color: red;">(${regStatus})</span>`}
+                    ` : `<span class="status-closed">(${regStatus})</span>`}
                 </td>
             `;
             
@@ -241,8 +609,11 @@
             if (!loadingDiv) {
                 loadingDiv = document.createElement('div');
                 loadingDiv.id = 'loadingDiv';
-                loadingDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 5px; z-index: 1000;';
-                loadingDiv.innerHTML = 'กำลังโหลดข้อมูล...';
+                loadingDiv.className = 'loading-spinner';
+                loadingDiv.innerHTML = `
+                    <div class="spinner"></div>
+                    <div style="text-align: center; font-weight: 600;">กำลังโหลดข้อมูล...</div>
+                `;
                 document.body.appendChild(loadingDiv);
             }
             loadingDiv.style.display = 'block';
@@ -257,7 +628,17 @@
     window.onload = function() {
         // ตรวจสอบว่ามี WEB_APP_URL หรือไม่
         if (WEB_APP_URL === 'YOUR_WEB_APP_URL_HERE') {
-            alert('กรุณาแก้ไข WEB_APP_URL ในโค้ด JavaScript ก่อนใช้งาน!');
+            const tbody = document.querySelector('#activitiesTable tbody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px;">
+                        <div style="background: linear-gradient(135deg, #ff9a56 0%, #ffb347 100%); color: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(255, 154, 86, 0.3);">
+                            <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">⚠️ การตั้งค่าไม่สมบูรณ์</div>
+                            <div style="font-size: 14px;">กรุณาแก้ไข WEB_APP_URL ในโค้ด JavaScript ก่อนใช้งาน!</div>
+                        </div>
+                    </td>
+                </tr>
+            `;
             return;
         }
         
