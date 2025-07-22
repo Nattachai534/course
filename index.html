@@ -74,6 +74,47 @@
             });
     }
 
+    // แปลงวันที่จากรูปแบบ ISO เป็นภาษาไทย
+    function formatDateThai(dateString) {
+        if (!dateString || dateString === '') return '';
+        
+        // ถ้าเป็นวันที่ภาษาไทยอยู่แล้ว ให้ return เลย
+        if (dateString.includes('สิงหาคม') || dateString.includes('กรกฎาคม') || 
+            dateString.includes('มิถุนายน') || dateString.includes('พฤษภาคม') ||
+            dateString.includes('มีนาคม') || dateString.includes('กุมภาพันธ์') ||
+            dateString.includes('มกราคม') || dateString.includes('เมษายน') ||
+            dateString.includes('กันยายน') || dateString.includes('ตุลาคม') ||
+            dateString.includes('พฤศจิกายน') || dateString.includes('ธันวาคม')) {
+            return dateString;
+        }
+        
+        try {
+            const months = [
+                'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน',
+                'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม',
+                'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+            ];
+            
+            // แปลงวันที่
+            const date = new Date(dateString);
+            
+            // ตรวจสอบว่าวันที่ถูกต้องหรือไม่
+            if (isNaN(date.getTime())) {
+                return dateString; // ถ้าแปลงไม่ได้ ให้ return ค่าเดิม
+            }
+            
+            const day = date.getDate();
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            
+            return `${day} ${month} ${year}`;
+            
+        } catch (error) {
+            console.log('Error formatting date:', error);
+            return dateString; // ถ้าเกิดข้อผิดพลาด ให้ return ค่าเดิม
+        }
+    }
+
     // แสดงข้อมูลในตาราง
     function displayActivities(activities) {
         const tbody = document.querySelector('#activitiesTable tbody');
@@ -94,11 +135,11 @@
             const capacityInternal = activity['จำนวนที่รับภายใน'] || 0;
             const capacityExternal = activity['จำนวนที่รับภายนอก'] || 0;
             
-            // ใช้วันที่ตัวอย่างถ้าไม่มีข้อมูล
-            const startDate = activity['วันที่เริ่ม'] || '25 สิงหาคม 2568';
-            const endDate = activity['วันที่สิ้นสุด'] || '25 สิงหาคม 2568';
-            const regOpenDate = activity['วันที่เปิดลงทะเบียน'] || '1 สิงหาคม 2568';
-            const regCloseDate = activity['วันที่ปิดลงทะเบียน'] || '25 สิงหาคม 2568';
+            // แปลงวันที่เป็นรูปแบบภาษาไทย
+            const startDate = formatDateThai(activity['วันที่เริ่ม']) || '25 สิงหาคม 2568';
+            const endDate = formatDateThai(activity['วันที่สิ้นสุด']) || '25 สิงหาคม 2568';
+            const regOpenDate = formatDateThai(activity['วันที่เปิดลงทะเบียน']) || '1 สิงหาคม 2568';
+            const regCloseDate = formatDateThai(activity['วันที่ปิดลงทะเบียน']) || '25 สิงหาคม 2568';
             
             row.innerHTML = `
                 <td style="padding: 15px; vertical-align: top;">
