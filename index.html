@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กิจกรรมประชุมและสัมมนาวิชาการ</title>
+</head>
+<body bgcolor="#ffffff" style="font-family: Arial, sans-serif; margin: 0; padding: 20px;">
+
+    <!-- แทบเลือกปีงบประมาณ -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td id="tab2568" bgcolor="#3366cc" style="color: white; text-align: center; font-weight: bold; padding: 15px; width: 33.33%; cursor: pointer;" onclick="selectYear('2568')">
+                ปีงบประมาณ 2568
+            </td>
+            <td id="tab2569" bgcolor="#ff9966" style="color: white; text-align: center; font-weight: bold; padding: 15px; width: 33.33%; cursor: pointer;" onclick="selectYear('2569')">
+                ปีงบประมาณ 2569
+            </td>
+            <td id="tab2570" bgcolor="#ff9966" style="color: white; text-align: center; font-weight: bold; padding: 15px; width: 33.34%; cursor: pointer;" onclick="selectYear('2570')">
+                ปีงบประมาณ 2570
+            </td>
+        </tr>
+    </table>
+
+    <script>
+    // *** ใส่ Web App URL ที่ได้จาก Google Apps Script ***
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxAuRfE-22hhpYQQ9kv-OdQFPXjmb813mpXRH9-aTSnc-vPjN1zK1LUbKwVOhHZpDc-/exec'; // แก้ไขส่วนนี้!!!
+    
+    let currentYear = '2568';
+    let allActivities = [];
+
+    // เปลี่ยนปีและโหลดข้อมูล
+    function selectYear(year) {
+        currentYear = year;
+        
+        // เปลี่ยนสีแถบทั้งหมดเป็นสีส้มก่อน
+        document.getElementById('tab2568').style.backgroundColor = '#ff9966';
+        document.getElementById('tab2569').style.backgroundColor = '#ff9966';
+        document.getElementById('tab2570').style.backgroundColor = '#ff9966';
+        
+        // เปลี่ยนแถบที่เลือกเป็นสีน้ำเงิน
+        document.getElementById('tab' + year).style.backgroundColor = '#3366cc';
+        
+        // เปลี่ยนหัวข้อตามปีที่เลือก
+        var heading = document.querySelector('h2');
+        heading.innerHTML = 'กิจกรรมประชุมและสัมมนาวิชาการ ปีงบประมาณ ' + year;
+        
+        // โหลดข้อมูลจาก Google Sheets
+        loadActivitiesFromSheets(year);
+    }
+
+    // โหลดข้อมูลจาก Google Sheets
+    function loadActivitiesFromSheets(year = null) {
+        showLoading(true);
+        
+        const url = WEB_APP_URL + '?action=getAll' + (year ? '&year=' + year : '');
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    allActivities = data.data;
+                    displayActivities(allActivities);
+                } else {
+                    console.error('Error loading data:', data.message);
+                    alert('เกิดข้อผิดพลาดในการโหลดข้อมูล: ' + data.message);
+                }
+                showLoading(false);
+            })
+            .catch(error => {
+                console.error('Network error:', error);
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message);
+                showLoading(false);
+            });
+    }
+
+    // แสดงข้อมูลในตาราง
+    function displayActivities(activities) {
+        const tbody = document.querySelector('#activitiesTable tbody');
+        tbody.innerHTML = '';
+        
+        if (activities.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">ไม่พบข้อมูลกิจกรรม</td></tr>';
+            return;
+        }
+        
+        activities.forEach((activity, index) => {
+            const row = document.createElement('tr');
+            row.style.backgroundColor = index % 2 === 0 ? '#fce4ec' : '#ffffff';
+            
+            const regStatus = activity['สถานะการลงทะเบียน'] || 'ไม่ระบุ';
+            const feeInternal = activity['ค่าลงทะเบียนภายใน'] || 0;
+            const feeExternal = activity['ค่าลงทะเบียนภายนอก'] || 0;
+            const capacityInternal = activity['จำนวนที่รับภายใน'] || 0;
+            const capacityExternal = activity['จำนวนที่รับภายนอก'] || 0;
+            
+            row.innerHTML = `
+                <td style="padding: 15px; vertical-align: top;">
+                    <strong style="color: #3366cc;">${activity['เรื่อง'] || 'ไม่ระบุหัวข้อ'}</strong><br>
+                    <span style="color: #3366cc;">${activity['รายละเอียด'] || ''}</span><br><br>
+                    <a href="${activity['ลิงค์รายละเอียด'] || '#'}" style="background-color: #dc3545; color: white; padding: 8px 15px; text-decoration: none; border-radius: 3px; font-size: 12px;">
+                        ● รายละเอียดเพิ่มเติมคลิกที่นี่
+                    </a>
+                </td>
+                <td style="padding: 15px; text-align: center; vertical-align: top;">
+                    ${activity['วันที่เริ่ม'] || ''}<br>
+                    ${activity['วันที่สิ้นสุด'] ? 'ถึง ' + activity['วันที่สิ้นสุด'] : ''}<br>
+                    ${activity['เวลา'] || ''}
+                </td>
+                <td style="padding: 15px; text-align: center; vertical-align: top;">
+                    ${activity['รูปแบบ'] || ''}<br>
+                    ${activity['สถานที่'] || ''}
+                </td>
+                <td style="padding: 15px; text-align: center; vertical-align: top;">
+                    ${activity['วันที่เปิดลงทะเบียน'] || ''}<br>
+                    ถึง ${activity['วันที่ปิดลงทะเบียน'] || ''}
+                </td>
+                <td style="padding: 15px; text-align: center; vertical-align: top;">
+                    ${regStatus === 'เปิดรับลงทะเบียน' ? `
+                        <div style="margin-bottom: 10px;">
+                            <strong>บุคลากรภายใน:</strong> ${capacityInternal} ท่าน<br>
+                            ค่าลงทะเบียน: ${feeInternal === 0 ? 'ฟรี' : feeInternal + ' บาท'}<br><br>
+                            <strong>บุคลากรภายนอก:</strong> ${capacityExternal} ท่าน<br>
+                            ค่าลงทะเบียน: ${feeExternal === 0 ? 'ฟรี' : feeExternal + ' บาท'}
+                        </div>
+                        <a href="${activity['ลิงค์ลงทะเบียน'] || '#'}" style="background-color: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 3px; font-size: 12px;">
+                            ✓ ลงทะเบียน
+                        </a>
+                    ` : `<span style="color: red;">(${regStatus})</span>`}
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+        });
+    }
+
+    // ค้นหากิจกรรม
+    function searchActivities() {
+        const searchText = document.getElementById('searchInput').value.trim();
+        
+        if (searchText === '') {
+            displayActivities(allActivities);
+            return;
+        }
+        
+        showLoading(true);
+        
+        const url = WEB_APP_URL + '?action=search&search=' + encodeURIComponent(searchText) + '&year=' + currentYear;
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    displayActivities(data.data);
+                    
+                    // อัพเดทข้อความผลการค้นหา
+                    const resultText = document.getElementById('searchResult');
+                    if (resultText) {
+                        resultText.textContent = `พบ ${data.data.length} รายการ`;
+                    }
+                } else {
+                    console.error('Search error:', data.message);
+                    alert('เกิดข้อผิดพลาดในการค้นหา: ' + data.message);
+                }
+                showLoading(false);
+            })
+            .catch(error => {
+                console.error('Search network error:', error);
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message);
+                showLoading(false);
+            });
+    }
+
+    // ล้างการค้นหา
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        displayActivities(allActivities);
+        
+        const resultText = document.getElementById('searchResult');
+        if (resultText) {
+            resultText.textContent = '';
+        }
+    }
+
+    // แสดง/ซ่อน Loading
+    function showLoading(show) {
+        let loadingDiv = document.getElementById('loadingDiv');
+        
+        if (show) {
+            if (!loadingDiv) {
+                loadingDiv = document.createElement('div');
+                loadingDiv.id = 'loadingDiv';
+                loadingDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 5px; z-index: 1000;';
+                loadingDiv.innerHTML = 'กำลังโหลดข้อมูล...';
+                document.body.appendChild(loadingDiv);
+            }
+            loadingDiv.style.display = 'block';
+        } else {
+            if (loadingDiv) {
+                loadingDiv.style.display = 'none';
+            }
+        }
+    }
+
+    // เมื่อเว็บโหลดเสร็จ
+    window.onload = function() {
+        // ตรวจสอบว่ามี WEB_APP_URL หรือไม่
+        if (WEB_APP_URL === 'YOUR_WEB_APP_URL_HERE') {
+            alert('กรุณาแก้ไข WEB_APP_URL ในโค้ด JavaScript ก่อนใช้งาน!');
+            return;
+        }
+        
+        // โหลดข้อมูลครั้งแรก
+        loadActivitiesFromSheets(currentYear);
+    };
+    </script>
+
+    <br>
+
+    <!-- หัวข้อหลัก -->
+    <h2 style="text-align: center; color: #3366cc; margin: 20px 0;">
+        กิจกรรมประชุมและสัมมนาวิชาการ ปีงบประมาณ 2568
+    </h2>
+
+    <!-- ช่องค้นหา -->
+    <table border="0" width="100%" style="margin-bottom: 20px;">
+        <tr>
+            <td align="right" style="padding-right: 20px;">
+                <strong>ค้นหา :</strong>
+                <input type="text" id="searchInput" size="30" placeholder="พิมพ์คำค้นหา..." style="padding: 8px; border: 2px solid #3366cc; border-radius: 4px; margin-right: 5px;">
+                <button onclick="searchActivities()" style="background-color: #3366cc; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
+                    🔍 ค้นหา
+                </button>
+                <button onclick="clearSearch()" style="background-color: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">
+                    ✖ ล้าง
+                </button>
+                <span id="searchResult" style="margin-left: 10px; color: #666;"></span>
+            </td>
+        </tr>
+    </table>
+
+    <!-- ตารางหลัก -->
+    <table id="activitiesTable" border="1" cellpadding="10" cellspacing="0" width="100%" style="border-collapse: collapse;">
+        <!-- หัวตาราง -->
+        <thead>
+            <tr bgcolor="#3366cc" style="color: white;">
+                <th style="padding: 15px; text-align: center;">เรื่อง</th>
+                <th style="padding: 15px; text-align: center;">กำหนดการ<br>ประชุม</th>
+                <th style="padding: 15px; text-align: center;">สถานที่</th>
+                <th style="padding: 15px; text-align: center;">กำหนดการ<br>ลงทะเบียน</th>
+                <th style="padding: 15px; text-align: center;">อัตราค่าลง<br>ทะเบียน</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- ข้อมูลจะถูกโหลดด้วย JavaScript -->
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 20px;">กำลังโหลดข้อมูล...</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
