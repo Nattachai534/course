@@ -41,7 +41,7 @@
         
         .year-tab {
             flex: 1;
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.3) !important;
             color: white;
             text-align: center;
             padding: 20px;
@@ -55,13 +55,14 @@
         }
         
         .year-tab:hover {
-            background: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.4) !important;
             transform: translateY(-2px);
         }
         
         .year-tab.active {
-            background: linear-gradient(135deg, #ff9a9e 0%, #ff6b9d 100%);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #ff9a9e 0%, #ff6b9d 100%) !important;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+            transform: translateY(-2px);
         }
         
         .year-tab:first-child {
@@ -397,14 +398,20 @@
         console.log('Selecting year:', year); // Debug log
         currentYear = year;
         
-        // เปลี่ยน active class
+        // เปลี่ยน active class และสีโดยตรง
         document.querySelectorAll('.year-tab').forEach(tab => {
             tab.classList.remove('active');
+            // รีเซ็ตสีเป็นโปร่งใส
+            tab.style.background = 'rgba(255,255,255,0.3)';
+            tab.style.boxShadow = 'none';
         });
         
         const selectedTab = document.getElementById('tab' + year);
         if (selectedTab) {
             selectedTab.classList.add('active');
+            // ตั้งสีใหม่สำหรับแถบที่เลือก
+            selectedTab.style.background = 'linear-gradient(135deg, #ff9a9e 0%, #ff6b9d 100%)';
+            selectedTab.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
             console.log('Active tab set for year:', year); // Debug log
         }
         
