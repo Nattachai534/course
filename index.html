@@ -414,32 +414,7 @@
             heading.innerHTML = 'กิจกรรมประชุมและสัมมนาวิชาการ ปีงบประมาณ ' + year;
         }
         
-        // แสดงข้อความแจ้งเตือนสำหรับปี 2569 และ 2570
-        if (year === '2569' || year === '2570') {
-            const tbody = document.querySelector('#activitiesTable tbody');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 40px;">
-                        <div style="background: linear-gradient(135deg, #ff9a9e 0%, #ff6b9d 100%); color: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(255, 154, 158, 0.3);">
-                            <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">📅 ปีงบประมาณ ${year}</div>
-                            <div style="font-size: 14px;">ยังไม่มีข้อมูลกิจกรรมสำหรับปีนี้ หรือกำลังอยู่ในระหว่างการเตรียมข้อมูล</div>
-                            <div style="font-size: 12px; margin-top: 10px; opacity: 0.9;">สามารถเพิ่มข้อมูลใน Google Sheets เพื่อแสดงผลที่นี่</div>
-                        </div>
-                    </td>
-                </tr>
-            `;
-            
-            // ล้างผลการค้นหา
-            const searchResult = document.getElementById('searchResult');
-            if (searchResult) {
-                searchResult.textContent = '';
-            }
-            
-            console.log('Showing placeholder for year:', year); // Debug log
-            return;
-        }
-        
-        // โหลดข้อมูลจาก Google Sheets สำหรับปี 2568
+        // โหลดข้อมูลจาก Google Sheets สำหรับทุกปี
         loadActivitiesFromSheets(year);
     }
 
